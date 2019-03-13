@@ -46,4 +46,32 @@ final class TodoController {
         
         return ""
     }
+    
+    func getPriceDelay(_ req: Request) throws -> String {
+        
+        // delay the request
+        sleep(5)
+        
+        let myURLString = "https://www.clever-tanken.de/tankstelle_details/10788"
+        guard let myURL = URL(string: myURLString) else {
+            print("Error: \(myURLString) doesn't seem to be a valid URL")
+            return ""
+        }
+        
+        do {
+            let html = try String(contentsOf: myURL, encoding: .ascii)
+            let doc: Document = try SwiftSoup.parse(html)
+            let elements = try doc.select(".price-field")
+            let text = try elements.first()?.text().replacingOccurrences(of: " ", with: "")
+            
+            return text ?? ""
+        } catch Exception.Error(let type, let message) {
+            print(type)
+            print(message)
+        } catch {
+            print("error")
+        }
+        
+        return ""
+    }
 }
